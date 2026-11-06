@@ -1,26 +1,22 @@
 package first.robot.mechanisms;
 
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.hardware.TalonFX;
+import first.robot.simulation.SingleFlywheelSim;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.framework.RobotBase;
 import org.wpilib.hardware.bus.CANPort;
 
-import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.hardware.TalonFX;
+public class Feeder implements Mechanism {
 
-import first.robot.simulation.SingleFlywheelSim;
+  private final TalonFX motor = new TalonFX(5, new CANBus(CANPort.CAN_S0));
 
-public class Feeder implements Mechanism{
+  public void setDefaultCommand(Command idle) {
+    Mechanism.super.setDefaultCommand(idle());
+  }
 
-    
-    private final TalonFX motor = new TalonFX(5, new CANBus(CANPort.CAN_S0));
-
-
-    public void setDefaultCommand (Command idle){
-        Mechanism.super.setDefaultCommand(idle());
-    }
-
-    public Command feed() {
+  public Command feed() {
     return run(coroutine -> {
           System.out.println("3/4 Speed!");
           while (true) {
@@ -29,10 +25,9 @@ public class Feeder implements Mechanism{
           }
         })
         .named("Set 3/4 Throttle");
-    }
+  }
 
-
-    public Command intake() {
+  public Command intake() {
     return run(coroutine -> {
           System.out.println("Full intake Speed!");
           while (true) {
@@ -41,9 +36,9 @@ public class Feeder implements Mechanism{
           }
         })
         .named("Full intake Speed");
-    }
+  }
 
-    public Command outtake() {
+  public Command outtake() {
     return run(coroutine -> {
           System.out.println("Spit it out!!");
           while (true) {
@@ -52,9 +47,9 @@ public class Feeder implements Mechanism{
           }
         })
         .named("Unload the haul");
-    }
+  }
 
-    public Command idle() {
+  public Command idle() {
     return run(coroutine -> {
           System.out.println("Motors Stop");
           while (true) {
@@ -63,14 +58,13 @@ public class Feeder implements Mechanism{
           }
         })
         .named("Motor Stop");
-    }
-
-    private final SingleFlywheelSim sim = SingleFlywheelSim.forFeeder(motor);
-
-    public void periodic() { // Update the simulation
-    if (RobotBase.isSimulation()) {
-    sim.periodic();
   }
-}
-    
+
+  private final SingleFlywheelSim sim = SingleFlywheelSim.forFeeder(motor);
+
+  public void periodic() { // Update the simulation
+    if (RobotBase.isSimulation()) {
+      sim.periodic();
+    }
+  }
 }

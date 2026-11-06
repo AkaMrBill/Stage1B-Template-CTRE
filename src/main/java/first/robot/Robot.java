@@ -27,6 +27,6 @@ public class Robot extends OpModeRobot {
   public void robotPeriodic() {
     Scheduler.getDefault().run();
   }
-  
+
   public void simulationPeriodic() {}
 }

@@ -1,6 +1,10 @@
 package first.robot.mechanisms;
 
 import org.wpilib.command3.Mechanism;
+
+import java.util.function.DoubleSupplier;
+
+import org.wpilib.command3.Command;
 import org.wpilib.drive.DifferentialDrive;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.hardware.imu.OnboardIMU;
@@ -23,29 +27,52 @@ public class Drivetrain implements Mechanism {
   public final TalonFX rightLeader = new TalonFX(2, new CANBus(CANPort.CAN_S0));
   public final TalonFX rightFollower = new TalonFX(3, new CANBus(CANPort.CAN_S0));
 
-   public final DifferentialDrive differentialDrive =
+  public final DifferentialDrive differentialDrive =
       new DifferentialDrive(leftLeader::setThrottle, rightLeader::setThrottle);
 
-   public final OnboardIMU imu = new OnboardIMU(MountOrientation.FLAT);
+  public final OnboardIMU imu = new OnboardIMU(MountOrientation.FLAT);
 
-   public final DrivetrainSim drivetrainSim = new DrivetrainSim(leftLeader, rightLeader);
+  public final DrivetrainSim drivetrainSim = new DrivetrainSim(leftLeader, rightLeader);
 
-   public Drivetrain(){
-       TalonFXConfiguration leftConfig = new TalonFXConfiguration();
-    leftConfig.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
 
-    leftLeader.getConfigurator().apply(leftConfig);
-    leftFollower.getConfigurator().apply(leftConfig);
+    public Drivetrain(){
+        TalonFXConfiguration leftConfig = new TalonFXConfiguration();
+                leftConfig.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
 
-    leftFollower.setControl(new Follower(leftLeader.getDeviceID(), MotorAlignmentValue.Aligned));
+        leftLeader.getConfigurator().apply(leftConfig);
+        leftFollower.getConfigurator().apply(leftConfig);
 
-    TalonFXConfiguration rightConfig = new TalonFXConfiguration();
-    rightConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
+        leftFollower.setControl(new Follower(leftLeader.getDeviceID(), MotorAlignmentValue.Aligned));
 
-    rightLeader.getConfigurator().apply(rightConfig);
-    rightFollower.getConfigurator().apply(rightConfig);
+        TalonFXConfiguration rightConfig = new TalonFXConfiguration();
+                rightConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
 
-    rightFollower.setControl(new Follower(rightLeader.getDeviceID(), MotorAlignmentValue.Aligned));
-   }
+        rightLeader.getConfigurator().apply(rightConfig);
+        rightFollower.getConfigurator().apply(rightConfig);
 
+        rightFollower.setControl(new Follower(rightLeader.getDeviceID(), MotorAlignmentValue.Aligned));
+
+        setDefaultCommand(idle());
+    }
+
+        public Command idle() {
+            return run(coroutine -> {
+                while (true) {
+                    differentialDrive.arcadeDrive(0.0, 0.0);
+                    coroutine.yield();
+                }
+            })
+            .named("Idle");
+        }
+
+        public Command arcadeDrive(DoubleSupplier forwardThrottle, DoubleSupplier rotationThrottle) {
+            return run(coroutine -> {
+                while (true) {
+                    differentialDrive.arcadeDrive(
+                    forwardThrottle.getAsDouble(), rotationThrottle.getAsDouble());
+                    coroutine.yield();
+                }
+            })
+            .named("Drive");
+    }
 }

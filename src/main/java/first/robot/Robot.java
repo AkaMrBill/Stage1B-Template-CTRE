@@ -41,6 +41,7 @@ public class Robot extends OpModeRobot {
   @Override
   public void robotPeriodic() {
     Scheduler.getDefault().run();
+    drivetrain.periodic();
     intakeLauncher.periodic();
     feeder.periodic();
   }

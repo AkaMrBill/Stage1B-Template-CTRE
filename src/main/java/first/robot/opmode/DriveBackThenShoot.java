@@ -2,12 +2,10 @@ package first.robot.opmode;
 
 import static org.wpilib.units.Units.Seconds;
 
+import first.robot.Robot;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Scheduler;
-import org.wpilib.opmode.Autonomous;
 import org.wpilib.opmode.PeriodicOpMode;
-
-import first.robot.Robot;
 
 public class DriveBackThenShoot extends PeriodicOpMode {
   private final Robot robot;

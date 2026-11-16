@@ -5,17 +5,11 @@
  */
 package first.robot;
 
-import org.wpilib.command3.Scheduler;
-import org.wpilib.framework.OpModeRobot;
-
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
-
 import first.robot.mechanisms.Drivetrain;
 import first.robot.mechanisms.Feeder;
 import first.robot.mechanisms.IntakeLauncher;
+import org.wpilib.command3.Scheduler;
+import org.wpilib.framework.OpModeRobot;
 
 /**
  * The methods in this class are called automatically as described in the OpModeRobot documentation.
@@ -28,15 +22,13 @@ public class Robot extends OpModeRobot {
 
   public IntakeLauncher intakeLauncher = new IntakeLauncher();
   public Feeder feeder = new Feeder();
-  public Drivetrain drivetrain = new Drivetrain(); 
+  public Drivetrain drivetrain = new Drivetrain();
 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  public Robot() {
- 
-  }
+  public Robot() {}
 
   @Override
   public void robotPeriodic() {
